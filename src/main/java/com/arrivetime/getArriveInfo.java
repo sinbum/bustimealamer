@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,6 +19,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.vo.BusArriveInfo;
 
 import lombok.Data;
 import lombok.Getter;
@@ -81,21 +85,83 @@ public class getArriveInfo {
 			XPath xpath = xpathFactory.newXPath();
 			XPathExpression expr = xpath.compile("//msgBody/itemList");
 			
+			
+			//BusArriveInfo bus = new BusArriveInfo();
+			Map<String, String> bus = new HashMap<String, String>();
+			
 			NodeList nodeList = (NodeList) expr.evaluate(doc,XPathConstants.NODESET);
 			for(int i = 0; i < nodeList.getLength();i++) {
 				NodeList child = nodeList.item(i).getChildNodes();
 				for(int j= 0; j< child.getLength(); j++) {
 					Node node = child.item(j);
 					
-					 System.out.println("현재 노드 이름 : " + node.getNodeName());
-	                    System.out.println("현재 노드 값 : " + node.getTextContent());
-	                    System.out.println("현재 노드 네임스페이스 : " + node.getPrefix());
-	                    System.out.println("현재 노드의 다음 노드 : " + node.getNextSibling());
-	                    System.out.println("");
+					if(node.getNodeName().equals("arrmsg1")) {
+						//첫번째 버스 도착시간
+						bus.put("firstarrive", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("arrmsg2")){
+						//두번째 버스 도착시간
+						bus.put("secondarrive", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("plainNo1")) {
+						//첫번쨰 버스 번호판
+						bus.put("plainNo1", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("plainNo2")) {
+						//두번째 버스 번호판
+						bus.put("plainNo2", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("rtNm")) {
+						//버스번호
+						bus.put("rtNm", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("stNm")) {
+						//정류장이름
+						bus.put("stationNm1", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("stationNm1")) {
+						//첫번째 버스 출발지점
+						bus.put("stationNm1", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("stationNm2")) {
+						//두번째 버스 출발지점.
+						bus.put("stationNm2", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("staOrd")) {
+						//정류장 번호
+						bus.put("staOrd", node.getTextContent());
+					}
+					else if(node.getNodeName().equals("stNm")) {
+						//정류장 번호
+						bus.put("stNm", node.getTextContent());
+					}
+					
+					
+					
+					              
+					
+					
+					
+						/*
+						node.getNodeName();
+	                    node.getTextContent();
+	                    node.getPrefix();
+	                    node.getNextSibling();
+	                    */
+					
+//					 System.out.println("현재 노드 이름 : " + node.getNodeName());
+//	                    System.out.println("현재 노드 값 : " + node.getTextContent());
+//	                    System.out.println("현재 노드 네임스페이스 : " + node.getPrefix());
+//	                    System.out.println("현재 노드의 다음 노드 : " + node.getNextSibling());
+//	                    System.out.println("");
 
 	
 				}
-			}			
+			}	
+			//System.out.println("이번 버스는 : "+bus.getFirstarrive() + "에 도착합니다.");		
+			System.out.println("첫번째 버스 : "+ bus.get("firstarrive"));
+			System.out.println("두번쨰 버스 : "+ bus.get("secondarrive"));
+			System.out.println(bus.toString());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
